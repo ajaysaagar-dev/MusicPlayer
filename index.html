@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/footer.css">
+    <link rel="stylesheet" href="styles/containers.css">
+    <link rel="stylesheet" href="styles/list.css">
+    <link rel="stylesheet" href="styles/player.css">
+</head>
+
+<body>
+    <div class="page" id="home">
+        <h1>Home</h1>
+        <space60></space60>
+        <h2>Recently Played...</h2>
+        <div class="container"></div>
+        <h2>Favs</h2>
+        <div class="container"></div>
+        <footer>
+            <img class="tab-button-home" src="./src/Icons/tabs/home filled.png" alt="">
+            <img class="tab-button-playlist" src="./src/Icons/tabs/playlist.png" alt="">
+            <img class="tab-button-player" src="./src/Icons/tabs/player.png" alt="">
+            <img class="tab-button-list" src="./src/Icons/tabs/songs.png" alt="">
+        </footer>
+    </div>
+    <div class="page" id="playlist">
+        <h1>Playlist</h1>
+        <footer>
+            <img class="tab-button-home" src="./src/Icons/tabs/home.png" alt="">
+            <img class="tab-button-playlist" src="./src/Icons/tabs/playlist filled.png" alt="">
+            <img class="tab-button-player" src="./src/Icons/tabs/player.png" alt="">
+            <img class="tab-button-list" src="./src/Icons/tabs/songs.png" alt="">
+        </footer>
+    </div>
+    <div class="page active" id="player">
+        <div class="cover">
+            <img src="./src/images/don.jpg" alt="">
+        </div>
+        <h5 id="song-name">Olaga Vaayadi</h5>
+        <h6 id="movie-name">Karuppan</h6>
+        <input id="slider" type="range" value="60" max="1000">
+        <div class="timing">
+            <p id="currentTime">00:00</p>
+            <p id="totalTime">00:00</p>
+        </div>
+        <div class="controls">
+            <img src="./src/Icons/controls/backward-track.png">
+            <img id="play-song" src="./src/Icons/controls/play.png">
+            <img id="pause-song" src="./src/Icons/controls/pause.png">
+            <img src="./src/Icons/controls/next.png">
+        </div>
+        <footer>
+            <img class="tab-button-home" src="./src/Icons/tabs/home.png" alt="">
+            <img class="tab-button-playlist" src="./src/Icons/tabs/playlist.png" alt="">
+            <img class="tab-button-player" src="./src/Icons/tabs/player filled.png" alt="">
+            <img class="tab-button-list" src="./src/Icons/tabs/songs.png" alt="">
+        </footer>
+    </div>
+    <div class="page" id="list">
+        <h1>List</h1>
+        <div class="list">
+        </div>
+        <footer>
+            <img class="tab-button-home" src="./src/Icons/tabs/home.png" alt="">
+            <img class="tab-button-playlist" src="./src/Icons/tabs/playlist.png" alt="">
+            <img class="tab-button-player" src="./src/Icons/tabs/player.png" alt="">
+            <img class="tab-button-list" src="./src/Icons/tabs/songs filled.png" alt="">
+        </footer>
+    </div>
+    <audio id="audio" src="" controls></audio>
+</body>
+<script type="module" src="scripts/listSongs.js"></script>
+<script type="module" src="scripts/switchTab.js"></script>
+<script type="module" src="scripts/main.js"></script>
+
+</html>

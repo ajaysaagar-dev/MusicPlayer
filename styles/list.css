@@ -1,0 +1,25 @@
+.list {
+    margin-top: 100px;
+    width: 100dvw;
+    height: 75dvh;
+    overflow: auto;
+}
+
+.song {
+    margin-left: 20px;
+    margin-top: 5px;
+    width: 90%;
+    height: max-content;
+    background: #2e2e2e;
+    border-radius: 10px;
+}
+
+.song h3,
+.song h4 {
+    margin: 10px;
+    font-weight: 400;
+}
+
+.song h4{
+    opacity: 0.75;
+}
