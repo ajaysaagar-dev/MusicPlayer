@@ -46,15 +46,7 @@ export function Play(id) {
 
 }
 
-window.addEventListener('keydown', (e) => {
-    if (e.key === '1') {
-        Play('gf3xdn2eusqylvrceidv');
-    }
-})
-
 setInterval(() => {
-
-    console.log(database);
 
     // Slider
     slider.value = audio.currentTime;

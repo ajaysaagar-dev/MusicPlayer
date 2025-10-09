@@ -14,12 +14,16 @@
     border-radius: 10px;
 }
 
+.song * {
+    pointer-events: none;
+}
+
 .song h3,
 .song h4 {
     margin: 10px;
     font-weight: 400;
 }
 
-.song h4{
+.song h4 {
     opacity: 0.75;
 }
