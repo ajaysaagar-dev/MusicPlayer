@@ -253,28 +253,6 @@
         "songUrl": "https://files.samadada.com/movies/Surya/Varanam_Aayiram/Yethi_Yethi.mp3"
     },
     {
-        "id": "NPIOCGTDOXHQFCOSNVCISABOTACHWYALECPBBRYB",
-        "songName": "Nan Pogiren",
-        "movieName": "Naanayam",
-        "year": "2010",
-        "singers": "S.P. Balasubrahmanyam, K.S. Chithra",
-        "composer": "James Vasanthan",
-        "imageUrl": "https://i.scdn.co/image/ab67616d0000b2739a3d560a49df7c05ee78e885",
-        "fullscreenImageUrl": "https://sund-images.sunnxt.com/6939/1600x1200_Naanayam_6939_359cc60f-1722-4fca-a3d7-affa7b2db487.jpg",
-        "songUrl": "https://files.samadada.com/movies/Prasanna/Naanayam/Nan_Pogiren_[SamaDada.Com].mp3"
-    },
-    {
-        "id": "FNHDEDTWWWRQBEKSQNGTTXCBIVXVROTAWZKBSAUL",
-        "songName": "Ka Ka Ka",
-        "movieName": "Naanayam",
-        "year": "2010",
-        "singers": "Silambarasan, Devi Sri Prasad",
-        "composer": "James Vasanthan",
-        "imageUrl": "https://i.scdn.co/image/ab67616d0000b2739a3d560a49df7c05ee78e885",
-        "fullscreenImageUrl": "https://sund-images.sunnxt.com/6939/1600x1200_Naanayam_6939_359cc60f-1722-4fca-a3d7-affa7b2db487.jpg",
-        "songUrl": "https://files.samadada.com/movies/Prasanna/Naanayam/Ka_Ka_Ka_[SamaDada.Com].mp3"
-    },
-    {
         "id": "FIENVXOZYWCPIPQROSRVXDUYFIQISEUCRWDBKEBJ",
         "songName": "Dhandiya Attam",
         "movieName": "Kadhalar Dhinam",
@@ -407,3 +385,4 @@
         "songUrl": "https://files.samadada.com/movies/Simbu/Vinnaithandi_Varuvaya/Vinnaithaandi_Varuvaaya.mp3"
     }
 ]
+
