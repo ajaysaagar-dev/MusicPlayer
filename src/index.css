@@ -1,0 +1,250 @@
+@import "tailwindcss";
+
+@theme {
+  --color-surface-container-low: #131316;
+  --color-on-primary: #00643e;
+  --color-primary-fixed: #1dfba5;
+  --color-tertiary-container: #fc0078;
+  --color-on-secondary-container: #f8f1ff;
+  --color-error-dim: #d53d18;
+  --color-on-secondary-fixed: #41009a;
+  --color-secondary: #ac89ff;
+  --color-error-container: #b92902;
+  --color-on-tertiary-fixed: #380015;
+  --color-tertiary-fixed: #ff8eac;
+  --color-outline: #767578;
+  --color-surface-container-high: #1f1f22;
+  --color-primary-container: #1dfba5;
+  --color-on-primary-container: #005a38;
+  --color-tertiary: #ff6b98;
+  --color-surface-container-highest: #262529;
+  --color-on-secondary-fixed-variant: #6300e2;
+  --color-secondary-dim: #874cff;
+  --color-on-tertiary: #47001d;
+  --color-inverse-surface: #fcf8fb;
+  --color-background: #0e0e10;
+  --color-on-surface: #fffbfe;
+  --color-secondary-fixed-dim: #ceb9ff;
+  --color-surface: #0e0e10;
+  --color-inverse-primary: #006d45;
+  --color-error: #ff7351;
+  --color-surface-dim: #0e0e10;
+  --color-on-error: #450900;
+  --color-on-background: #fffbfe;
+  --color-on-primary-fixed: #00452a;
+  --color-secondary-container: #7000ff;
+  --color-surface-container-lowest: #000000;
+  --color-tertiary-dim: #e4006c;
+  --color-surface-tint: #9effc8;
+  --color-on-error-container: #ffd2c8;
+  --color-on-primary-fixed-variant: #00653f;
+  --color-primary-dim: #00ec9a;
+  --color-surface-bright: #2c2c2f;
+  --color-surface-container: #19191c;
+  --color-on-surface-variant: #adaaad;
+  --color-on-tertiary-fixed-variant: #760035;
+  --color-surface-variant: #262529;
+  --color-secondary-fixed: #dac9ff;
+  --color-primary: #9effc8;
+  --color-primary-fixed-dim: #00ec9a;
+  --color-on-secondary: #290067;
+  --color-inverse-on-surface: #565457;
+  --color-on-tertiary-container: #000000;
+  --color-tertiary-fixed-dim: #ff769e;
+  --color-outline-variant: #48474a;
+
+  --font-headline: 'Manrope', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-label: 'Inter', sans-serif;
+}
+
+/* === Desktop/Electron Utilities === */
+.drag {
+  -webkit-app-region: no-drag !important;
+}
+
+.no-drag {
+  -webkit-app-region: no-drag !important;
+}
+
+/* === Global Resets === */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  user-select: none !important;
+  -webkit-user-drag: none !important;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: var(--color-primary);
+  color: var(--color-on-primary-container);
+}
+
+
+/* === Glass Panel === */
+.glass-panel {
+  background: rgba(38, 37, 41, 0.4);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border: 1px solid rgba(118, 117, 120, 0.1);
+}
+
+/* === Mesh Gradient Background === */
+.mesh-gradient {
+  background-image:
+    radial-gradient(at 0% 0%, rgba(158, 255, 200, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(172, 137, 255, 0.15) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(228, 0, 108, 0.1) 0px, transparent 50%);
+}
+
+.mesh-gradient-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 10% 20%, rgba(158, 255, 200, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(172, 137, 255, 0.08) 0%, transparent 40%);
+}
+
+/* === Ghost Border === */
+.ghost-border {
+  border: 1px solid rgba(72, 71, 74, 0.15);
+}
+
+/* === Lyrics Gradient Mask === */
+.lyrics-gradient-mask {
+  mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
+}
+
+/* === Tonal Transition === */
+.tonal-transition {
+  background: linear-gradient(to bottom, rgba(14, 14, 16, 0.8) 0%, rgba(14, 14, 16, 0) 100%);
+}
+
+/* === Custom Toggle === */
+.toggle-checkbox:checked+.toggle-slot {
+  background-color: var(--color-primary);
+}
+
+.toggle-checkbox:checked+.toggle-slot .toggle-dot {
+  transform: translateX(1.5rem);
+  background-color: var(--color-on-primary-fixed);
+}
+
+/* === Scrollbar Utilities === */
+.no-scrollbar::-webkit-scrollbar,
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar,
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* === Custom Scrollbar for Content Areas === */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-outline-variant);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-outline);
+}
+
+/* === Progress Bar Animations === */
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 8px rgba(172, 137, 255, 0.5);
+  }
+
+  50% {
+    box-shadow: 0 0 16px rgba(172, 137, 255, 0.8);
+  }
+}
+
+.progress-dot {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* === Fade In Animation === */
+@keyframes slow-zoom {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.animate-slow-zoom {
+  animation: slow-zoom 20s ease-in-out infinite;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* === Range Input Styling === */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 9999px;
+  background: var(--color-surface-container-highest);
+  outline: none;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-surface-bright);
+  box-shadow: 0 0 8px rgba(172, 137, 255, 0.5);
+  cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-surface-bright);
+  box-shadow: 0 0 8px rgba(172, 137, 255, 0.5);
+  cursor: pointer;
+  border: none;
+}
