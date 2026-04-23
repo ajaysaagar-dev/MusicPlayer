@@ -4,6 +4,8 @@ export interface Song {
   singers: string[]; // artist IDs
   albumid: string;
   songurl: string;
+  videourl?: string;
+  isVideoEnabled?: boolean;
   // Legacy fields for UI compatibility if needed
   movieName?: string;
   imageUrl?: string;

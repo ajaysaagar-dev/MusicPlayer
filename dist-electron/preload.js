@@ -1,9 +1,9 @@
-import { contextBridge, ipcRenderer } from "electron";
+let electron = require("electron");
 //#region electron/preload.ts
-contextBridge.exposeInMainWorld("electronAPI", {
-	minimize: () => ipcRenderer.send("window-minimize"),
-	maximize: () => ipcRenderer.send("window-maximize"),
-	close: () => ipcRenderer.send("window-close")
+electron.contextBridge.exposeInMainWorld("electronAPI", {
+	minimize: () => electron.ipcRenderer.send("window-minimize"),
+	maximize: () => electron.ipcRenderer.send("window-maximize"),
+	close: () => electron.ipcRenderer.send("window-close")
 });
 console.log("MyPlay: Preload script loaded with window controls.");
 //#endregion

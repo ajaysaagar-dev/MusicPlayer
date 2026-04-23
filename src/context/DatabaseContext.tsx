@@ -22,6 +22,11 @@ interface DatabaseContextType {
     albums: Album[];
     playlists: Playlists;
     account: any;
+    stats: {
+      repoSize: number;
+      totalDataSize: number;
+      fileSizes: Record<string, number>;
+    };
     refresh: (silent?: boolean) => Promise<void>;
     updateSongs: (newSongs: Song[]) => Promise<void>;
     updateArtists: (newArtists: Artist[]) => Promise<void>;
@@ -57,6 +62,11 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     profile: { name: 'Guest User', email: 'guest@myplay.com' },
     settings: { zoomSpeed: 10, theme: 'nebula' }
   });
+  const [stats, setStats] = useState({
+    repoSize: 0,
+    totalDataSize: 0,
+    fileSizes: { songs: 0, artists: 0, albums: 0, playlists: 0, account: 0 }
+  });
 
   const getOctokit = useCallback(() => {
     if (!token) return null;
@@ -77,9 +87,12 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         repo,
         path,
       });
-      if ('content' in data) {
+      if ('content' in data && 'size' in data) {
         const content = atob(data.content.replace(/\n/g, ''));
-        return JSON.parse(content);
+        return {
+          json: JSON.parse(content),
+          size: data.size
+        };
       }
       return null;
     } catch (e) {
@@ -93,7 +106,8 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
     if (silent) setIsSilentSyncing(true); else setIsLoading(true);
     try {
-      const [s, ar, al, p, acc] = await Promise.all([
+      const [repoData, s, ar, al, p, acc] = await Promise.all([
+        octokit.rest.repos.get({ owner, repo }),
         fetchFile(octokit, 'songs.json'),
         fetchFile(octokit, 'artists.json'),
         fetchFile(octokit, 'albums.json'),
@@ -101,11 +115,23 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         fetchFile(octokit, 'account.json'),
       ]);
 
-      if (Array.isArray(s)) setSongs(s);
-      if (Array.isArray(ar)) setArtists(ar);
-      if (Array.isArray(al)) setAlbums(al);
-      if (p && typeof p === 'object') setPlaylists(p);
-      if (acc && typeof acc === 'object') setAccount(acc);
+      if (s) setSongs(s.json);
+      if (ar) setArtists(ar.json);
+      if (al) setAlbums(al.json);
+      if (p) setPlaylists(p.json);
+      if (acc) setAccount(acc.json);
+
+      setStats({
+        repoSize: repoData.data.size,
+        fileSizes: {
+          songs: s?.size || 0,
+          artists: ar?.size || 0,
+          albums: al?.size || 0,
+          playlists: p?.size || 0,
+          account: acc?.size || 0,
+        },
+        totalDataSize: (s?.size || 0) + (ar?.size || 0) + (al?.size || 0) + (p?.size || 0) + (acc?.size || 0)
+      });
       
       setIsInitialized(true);
       setError(null);
@@ -249,7 +275,7 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         initializeRepo,
       },
       data: {
-        songs, artists, albums, playlists, account, refresh,
+        songs, artists, albums, playlists, account, stats, refresh,
         updateSongs: (s) => updateFile('songs.json', s, 'Sync songs', 'Songs database updated'),
         updateArtists: (ar) => updateFile('artists.json', ar, 'Sync artists', 'Artist registry updated'),
         updateAlbums: (al) => updateFile('albums.json', al, 'Sync albums', 'Album collection updated'),

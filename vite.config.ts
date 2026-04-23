@@ -16,12 +16,11 @@ export default defineConfig({
           entry: 'electron/main.ts',
           vite: {
             build: {
-              rollupOptions: {
-                output: {
-                  format: 'cjs',
-                  entryFileNames: '[name].js'
-                }
-              }
+              lib: {
+                entry: 'electron/main.ts',
+                formats: ['cjs'],
+                fileName: () => 'main.cjs',
+              },
             }
           }
         },
@@ -32,12 +31,11 @@ export default defineConfig({
           },
           vite: {
             build: {
-              rollupOptions: {
-                output: {
-                  format: 'cjs',
-                  entryFileNames: '[name].js'
-                }
-              }
+              lib: {
+                entry: 'electron/preload.ts',
+                formats: ['cjs'],
+                fileName: () => 'preload.cjs',
+              },
             }
           }
         },

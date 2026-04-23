@@ -18,6 +18,8 @@ interface PlayerState {
   playlist: Song[];
   shuffleMode: boolean;
   repeatMode: 'off' | 'all' | 'one';
+  activeArtistId: string | null;
+  activeAlbumId: string | null;
 }
 
 interface PlayerContextType extends PlayerState {
@@ -32,6 +34,8 @@ interface PlayerContextType extends PlayerState {
   toggleShuffle: () => void;
   toggleRepeat: () => void;
   reorderPlaylist: (startIndex: number, endIndex: number) => void;
+  setActiveArtistId: (id: string | null) => void;
+  setActiveAlbumId: (id: string | null) => void;
 }
 
 const PlayerContext = createContext<PlayerContextType | null>(null);
@@ -54,7 +58,11 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     playlist: [],
     shuffleMode: false,
     repeatMode: 'off',
+    activeArtistId: null,
+    activeAlbumId: null,
   });
+  
+  const isSeekingRef = useRef(false);
 
   useEffect(() => {
     const audio = new Audio();
@@ -63,8 +71,20 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
 
     const onTimeUpdate = () => setState(prev => ({ ...prev, progress: audio.currentTime }));
     const onLoadedMetadata = () => setState(prev => ({ ...prev, duration: audio.duration }));
-    const onPlaying = () => setState(prev => ({ ...prev, isPlaying: true }));
-    const onPause = () => setState(prev => ({ ...prev, isPlaying: false }));
+    const onDurationChange = () => setState(prev => ({ ...prev, duration: audio.duration }));
+    const onPlaying = () => {
+      isSeekingRef.current = false;
+      setState(prev => ({ ...prev, isPlaying: true }));
+    };
+    const onPause = () => {
+      // Only trigger global pause if we aren't intentionally seeking
+      if (!isSeekingRef.current) {
+        setState(prev => ({ ...prev, isPlaying: false }));
+      }
+    };
+    const onWaiting = () => {
+      // Optional: could add isBuffering state here, but for now we keep isPlaying true
+    };
     const onEnded = () => {
       setState(prev => {
         if (prev.repeatMode === 'one') {
@@ -78,15 +98,19 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
 
     audio.addEventListener('timeupdate', onTimeUpdate);
     audio.addEventListener('loadedmetadata', onLoadedMetadata);
+    audio.addEventListener('durationchange', onDurationChange);
     audio.addEventListener('playing', onPlaying);
     audio.addEventListener('pause', onPause);
+    audio.addEventListener('waiting', onWaiting);
     audio.addEventListener('ended', onEnded);
 
     return () => {
       audio.removeEventListener('timeupdate', onTimeUpdate);
       audio.removeEventListener('loadedmetadata', onLoadedMetadata);
+      audio.removeEventListener('durationchange', onDurationChange);
       audio.removeEventListener('playing', onPlaying);
       audio.removeEventListener('pause', onPause);
+      audio.removeEventListener('waiting', onWaiting);
       audio.removeEventListener('ended', onEnded);
       audio.pause();
     };
@@ -119,8 +143,26 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   const play = useCallback((song: Song, list?: Song[]) => {
     const audio = audioRef.current;
     if (!audio) return;
+
+    // Avoid redundant loading if it's already the same song
+    if (audio.src === song.songurl && !audio.paused) {
+      return;
+    }
+
     audio.src = song.songurl;
-    audio.play().catch(e => console.error("Playback failed", e));
+    audio.load(); // Explicitly load
+    
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(e => {
+        if (e.name === 'AbortError') {
+           // Silently ignore interruptions by new requests
+           return;
+        }
+        console.error("Playback failed", e);
+      });
+    }
+
     setState((prev) => ({
       ...prev,
       currentSong: song,
@@ -131,7 +173,12 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const pause = useCallback(() => audioRef.current?.pause(), []);
-  const resume = useCallback(() => audioRef.current?.play().catch(() => {}), []);
+  const resume = useCallback(() => {
+    const playPromise = audioRef.current?.play();
+    if (playPromise !== undefined) {
+        playPromise.catch(() => {});
+    }
+  }, []);
 
   const togglePlay = useCallback(() => {
     if (state.isPlaying) pause();
@@ -161,8 +208,14 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     play(playlist[prevIdx]);
   }, [state, play]);
 
-  const seek = useCallback((time: number) => {
-    if (audioRef.current) audioRef.current.currentTime = time;
+  const seek = useCallback((time: number, isFinal: boolean = true) => {
+    if (audioRef.current) {
+        if (isFinal) {
+            isSeekingRef.current = true;
+            audioRef.current.currentTime = time;
+        }
+        setState(prev => ({ ...prev, progress: time }));
+    }
   }, []);
 
   const setVolume = useCallback((vol: number) => {
@@ -191,6 +244,14 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  const setActiveArtistId = useCallback((id: string | null) => {
+    setState(prev => ({ ...prev, activeArtistId: id }));
+  }, []);
+
+  const setActiveAlbumId = useCallback((id: string | null) => {
+    setState(prev => ({ ...prev, activeAlbumId: id }));
+  }, []);
+
   return (
     <PlayerContext.Provider
       value={{
@@ -205,6 +266,9 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
         setVolume,
         toggleShuffle,
         toggleRepeat,
+        reorderPlaylist,
+        setActiveArtistId,
+        setActiveAlbumId,
       }}
     >
       {children}

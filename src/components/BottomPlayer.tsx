@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { usePlayer } from '../context/PlayerContext';
 import { useDatabase } from '../context/DatabaseContext';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -34,7 +34,7 @@ function formatTime(seconds: number): string {
     return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
-export default function BottomPlayer() {
+export default function BottomPlayer({ onMenuStateChange }: { onMenuStateChange?: (isOpen: boolean) => void }) {
     const {
         currentSong,
         isPlaying,
@@ -52,7 +52,8 @@ export default function BottomPlayer() {
         setVolume,
         toggleShuffle,
         toggleRepeat,
-        reorderPlaylist
+        reorderPlaylist,
+        setActiveArtistId
     } = usePlayer();
     const { data } = useDatabase();
     const navigate = useNavigate();
@@ -63,6 +64,11 @@ export default function BottomPlayer() {
     const [showPlaylistMenu, setShowPlaylistMenu] = useState(false);
     const [showQueue, setShowQueue] = useState(false);
     const [isSyncingFav, setIsSyncingFav] = useState(false);
+
+    // Notify parent if any menu is open
+    useEffect(() => {
+        onMenuStateChange?.(showArtists || showPlaylistMenu || showQueue);
+    }, [showArtists, showPlaylistMenu, showQueue]);
 
     const progressPercent = duration > 0 ? (progress / duration) * 100 : 0;
 
@@ -128,10 +134,30 @@ export default function BottomPlayer() {
             {/* Absolute Top Progress Bar Overlay */}
             <div
                 className="w-full h-1.5 bg-white/5 cursor-pointer relative group transition-all hover:h-2"
-                onClick={(e) => {
+                onMouseDown={(e) => {
+                    const handleMove = (moveEvent: MouseEvent) => {
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        const percent = Math.max(0, Math.min(1, (moveEvent.clientX - rect.left) / rect.width));
+                        // Update UI only during move
+                        seek(percent * duration, false);
+                    };
+
+                    const handleUp = (upEvent: MouseEvent) => {
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        const percent = Math.max(0, Math.min(1, (upEvent.clientX - rect.left) / rect.width));
+                        // Commit seek on mouse up
+                        seek(percent * duration, true);
+
+                        window.removeEventListener('mousemove', handleMove);
+                        window.removeEventListener('mouseup', handleUp);
+                    };
+
                     const rect = e.currentTarget.getBoundingClientRect();
-                    const percent = (e.clientX - rect.left) / rect.width;
-                    seek(percent * duration);
+                    const percent = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+                    seek(percent * duration, true);
+
+                    window.addEventListener('mousemove', handleMove);
+                    window.addEventListener('mouseup', handleUp);
                 }}
             >
                 <div
@@ -231,7 +257,11 @@ export default function BottomPlayer() {
                         <div className="space-y-4 max-h-60 overflow-y-auto custom-scrollbar pr-1">
                             {singersList.length > 0 ? (
                                 singersList.map(artist => (
-                                    <div key={artist?.id} className="flex items-center gap-4 group cursor-default">
+                                    <div 
+                                        key={artist?.id} 
+                                        onClick={() => artist?.id && setActiveArtistId(artist.id)}
+                                        className="flex items-center gap-4 group cursor-pointer hover:bg-white/5 p-2 rounded-2xl transition-all active:scale-95"
+                                    >
                                         <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-lg border border-white/5 transition-transform group-hover:scale-110">
                                             <img src={artist?.artist_image} className="w-full h-full object-cover" />
                                         </div>

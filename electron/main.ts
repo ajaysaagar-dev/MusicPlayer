@@ -2,7 +2,8 @@ import { app, BrowserWindow, shell, ipcMain, screen } from 'electron';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+// @ts-ignore
+const __dirname = path.dirname(fileURLToPath(import.meta.url || `file://${__filename}`));
 
 // Optimization
 app.commandLine.appendSwitch('enable-gpu-rasterization');
@@ -27,10 +28,11 @@ function createWindow() {
     backgroundColor: '#000000',
     webPreferences: {
       // Ensure the preload script is loaded correctly for IPC to function
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, 'preload.cjs'),
       nodeIntegration: false,
       contextIsolation: true,
       spellcheck: false,
+      backgroundThrottling: false,
     },
   });
 
